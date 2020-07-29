@@ -6,7 +6,7 @@ from .config import RABBITMQ_CONN_INFO, EXCHANGE_NAME, EXCHANGE_TYPE, QUEUE_NAME
 __all__ = ['PublishService', 'SubscribeService']
 
 
-class ConnectServiceMixin(object):
+class ConnectService(object):
     @classmethod
     def get_connection_and_channel(cls):
         connection = cls.connect_to_rbmq(RABBITMQ_CONN_INFO)
@@ -24,8 +24,8 @@ class ConnectServiceMixin(object):
         return connection
 
 
-class CommonService(ConnectServiceMixin):
-    connection, channel = ConnectServiceMixin.get_connection_and_channel()
+class CommonService(ConnectService):
+    connection, channel = ConnectService.get_connection_and_channel()
 
     def __new__(cls, *args, **kwargs):
         if len(cls.__mro__) == 3:
