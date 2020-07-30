@@ -25,8 +25,6 @@ class ConnectService(object):
 
 
 class CommonService(ConnectService):
-    connection, channel = ConnectService.get_connection_and_channel()
-
     def __new__(cls, *args, **kwargs):
         if len(cls.__mro__) == 3:
             raise ValueError('can not instantiate this class for itself, just can be instantiated by inherited classes')
@@ -102,6 +100,7 @@ class PublishService(CommonService):
         exchange_name ([type], optional): [description]. Defaults to EXCHANGE_NAME.
     """
 
+    connection, channel = ConnectService.get_connection_and_channel()
     def publish(self, message, routing_key, exchange_name=EXCHANGE_NAME, exchange_type=EXCHANGE_TYPE):
         """用于发布消息，需要给定消息内容和路由方式
 
@@ -126,7 +125,7 @@ class SubscribeService(CommonService):
     Args:
         CommonService ([class]): [订阅和发布共有的服务]
     """
-
+    connection, channel = ConnectService.get_connection_and_channel()
     def subscribe(self, binding_keys, queue_name=QUEUE_NAME, used_for_log=False,
                   exchange_name=EXCHANGE_NAME, exchange_type=EXCHANGE_TYPE):
         """订阅消息，默认为fanout方式订阅，可自主设置，
