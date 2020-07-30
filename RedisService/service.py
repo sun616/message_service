@@ -18,12 +18,9 @@ class CommonService(ConnectServiceMixin):
     """提供连接redis的服务，也可以在实例化当前类的子类时提供已经连接的connection对象
     下面两个类变量的作用在于避免每次实例化都去连接redis并获取pubsub对象
     """
-    connection = ConnectServiceMixin.connect_to_redis()
-    pubsub = connection.pubsub()
-    
     def __new__(cls, *args, **kwargs):
         if len(cls.__mro__) == 3:
-            raise ValueError('can not instantiate this class for itself, just can be instantiated by inherited classes')
+            raise Exception('can not instantiate this class for itself, just can be instantiated by inherited classes')
         else:
             return super().__new__(cls)
 
@@ -38,11 +35,17 @@ class CommonService(ConnectServiceMixin):
 
 
 class PublishService(CommonService):
+    connection = ConnectServiceMixin.connect_to_redis()
+    pubsub = connection.pubsub()
+    
     def publish(self, channel, message):
         self.connection.publish(channel, message)
 
 
 class SubscribeService(CommonService):
+    connection = ConnectServiceMixin.connect_to_redis()
+    pubsub = connection.pubsub()
+    
     def get_messages(self):
         """获取订阅的消息
 

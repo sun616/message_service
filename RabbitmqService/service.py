@@ -25,9 +25,9 @@ class ConnectService(object):
 
 
 class CommonService(ConnectService):
-    def __new__(cls, *args, **kwargs):
-        if len(cls.__mro__) == 3:
-            raise ValueError('can not instantiate this class for itself, just can be instantiated by inherited classes')
+    def __new__(cls):
+        if len(cls.__mro__) == 3:  # 也可以通过cls.__name__来判断
+            raise Exception('can not instantiate this class for itself, just can be instantiated by inherited classes')
         else:
             return super().__new__(cls)
 
